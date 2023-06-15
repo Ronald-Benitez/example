@@ -1,6 +1,7 @@
 import { app } from "../firebase/config";
 import { getDatabase, ref, set, onValue } from "firebase/database";
 import PDFBuilder from "../components/PDFBuilder";
+import { VictoryLine, VictoryChart } from "victory";
 
 import { useState, useEffect, Fragment } from "react";
 
@@ -13,20 +14,21 @@ export default function Prueba() {
   const [toggleComponent, setToggleComponent] = useState(true);
   const [count, setCount] = useState(0);
   const [data, setData] = useState([]);
+  const [dataChart, setDataChart] = useState([]);
 
   const db = getDatabase(app);
 
   const setArrayToFirebase = () => {
-    set(ref(db, "array/"), [1, 2, 3, 4, 5]);
+    set(ref(db, "array/"), [1, 2, 3, 4, 5, 6, 7, 8, 9]);
   };
 
   const setObjetToFirebase = () => {
     set(ref(db, "object/"), {
-      "uno": 1,
-      "dos": 2,
-      "tres": 3,
-      "cuatro": 4,
-      "cinco": 5,
+      uno: 1,
+      dos: 2,
+      tres: 3,
+      cuatro: 4,
+      cinco: 5,
     });
   };
 
@@ -46,7 +48,25 @@ export default function Prueba() {
       setData(dataArray);
       console.log(dataArray);
     });
+
+    onValue(ref(db, "array/"), (snapshot) => {
+      const dataArray = snapshot.val();
+      console.log(dataArray);
+      setDataChart(dataArray.slice(-3));
+    });
   }, []);
+
+  const dataToObjectXY = (data) => {
+    const dataObject = [];
+    data.forEach((item, index) => {
+      console.log(item);
+      console.log(index);
+      //x is an hour getting with new Date plus the index
+      //y is the value
+      dataObject.push({ x: new Date().getHours() + index, y: item });
+    });
+    return dataObject;
+  };
 
   return (
     <div className="container">
@@ -71,6 +91,20 @@ export default function Prueba() {
       )}
       <div>{count}</div>
       <PDFBuilder />
+      <div className="container">
+        <div
+          style={{
+            width: "400px",
+            height: "300px",
+          }}
+        >
+          {dataChart.length > 0 && (
+            <VictoryChart>
+              <VictoryLine data={dataChart} />
+            </VictoryChart>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
