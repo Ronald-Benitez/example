@@ -1,6 +1,6 @@
 import { Fragment } from "react";
 
-export default function ComponentA({ data }) {
+export default function ComponentA({ data, setData }) {
   return (
     <div className="row border">
       <h4>Datos en componente a</h4>

@@ -40,6 +40,7 @@ export default function Prueba() {
     setArrayToFirebase();
     setObjetToFirebase();
     setStringToFirebase();
+    sendPrecipitations();
 
     onValue(ref(db, "object/"), (snapshot) => {
       const dataObject = snapshot.val();
@@ -68,6 +69,11 @@ export default function Prueba() {
     return dataObject;
   };
 
+  const sendPrecipitations = () => {
+    const data = [1, 0, 1, 1, 1, 0, 1, 0, 1];
+    set(ref(db, "precipitations/"), data);
+  };
+
   return (
     <div className="container">
       aaaaaaaaaaaa
@@ -85,7 +91,7 @@ export default function Prueba() {
         </button>
       </div>
       {toggleComponent ? (
-        <ComponentA data={data} />
+        <ComponentA data={data} setData={setData} />
       ) : (
         <ComponentB data={data} />
       )}
