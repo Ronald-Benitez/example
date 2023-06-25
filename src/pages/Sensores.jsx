@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { getDatabase, ref, set, onValue } from "firebase/database";
 import { app } from "../firebase/config"; //Configuración de firebase
 import moment from "moment/moment"; //Librería para manejar fechas
+import Table from "./Table";
 
 export default function Sensores() {
   const [date, setDate] = useState(moment().format("DD-MM-YYYY"));
@@ -13,6 +14,7 @@ export default function Sensores() {
   const [lluvia, setLluvia] = useState([]);
   const [temperatura, setTemperatura] = useState([]);
   const [suelo, setSuelo] = useState([]);
+  const [data, setData] = useState([]);
 
   const db = getDatabase(app);
 
@@ -27,6 +29,7 @@ export default function Sensores() {
     setLluvia([]);
     setTemperatura([]);
     setSuelo([]);
+    setData([]);
 
     for (let i = 0; i <= 59; i++) {
       const h = `${newHora}:${i < 10 ? "0" + i : i}`;
@@ -37,6 +40,8 @@ export default function Sensores() {
   const getSensorData = (h) => {
     onValue(ref(db, "Sensores/" + date + "/" + h), (snapshot) => {
       const object = snapshot.val();
+      object.fecha = h + " " + date;
+
       if (!object)
         return console.log(
           "No hay datos para la hora " + h + " del día " + date
@@ -49,16 +54,16 @@ export default function Sensores() {
       setTemperatura((prevState) => [...prevState, object.temperatura]);
       setSuelo((prevState) => [...prevState, object.suelo]);
 
+      setData((prevState) => [...prevState, object]);
+
       console.log(snapshot.val());
       console.log("Sensores/" + date + "/" + hora);
     });
   };
 
-
   useEffect(() => {
     getData();
   }, []);
-
 
   const renderData = () => {
     return (
@@ -80,16 +85,38 @@ export default function Sensores() {
   };
 
   return (
-    <div>
-      <h1>Sensores</h1>
-      <input
-        type="date"
-        onChange={(e) => setDate(moment(e.target.value).format("DD-MM-YYYY"))}
-      />
-      <input type="time" onChange={(e) => setHora(e.target.value)} />
+    <div className="container mt-4">
+      <div className="">
+        <h1 className="text-center">Sensores</h1>
+        <div className="input-group justify-content-center">
+          <div className="col-12 col-md-4">
+            <input
+              type="date"
+              className="form-control"
+              onChange={(e) =>
+                setDate(moment(e.target.value).format("DD-MM-YYYY"))
+              }
+            />
+          </div>
+          <div className="col-12 col-md-2 ">
+            <input
+              type="time"
+              className="form-control "
+              onChange={(e) => setHora(e.target.value)}
+            />
+          </div>
 
-      <button onClick={getData}>Buscar</button>
-      <div>{renderData()}</div>
+          <div className="col-12 col-md-2">
+            <button onClick={getData} className="btn btn-outline-dark">
+              Buscar
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <Table data={data} />
+        </div>
+      </div>
     </div>
   );
 }
