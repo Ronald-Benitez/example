@@ -32,6 +32,7 @@ export default function Prueba() {
     });
   };
 
+
   const setStringToFirebase = () => {
     set(ref(db, "string/"), "Hola mundo");
   };
@@ -55,6 +56,9 @@ export default function Prueba() {
       console.log(dataArray);
       setDataChart(dataArray.slice(-3));
     });
+
+    
+
   }, []);
 
   const dataToObjectXY = (data) => {
