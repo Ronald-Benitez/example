@@ -4,7 +4,7 @@ import DataTable from "react-data-table-component";
 export default function Table({ data }) {
   //data to array
   const dataToArray = Object.values(data);
-  console.log(dataToArray);
+
 
   const columns = [
     {
@@ -48,7 +48,6 @@ export default function Table({ data }) {
   return (
     <div>
       <DataTable
-        title="Sensores"
         columns={columns}
         data={dataToArray}
         pagination
