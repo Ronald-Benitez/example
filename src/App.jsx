@@ -31,10 +31,10 @@ export default function App() {
       const newData = keys.map((h) => {
         return {
           ...object[h],
-          fecha: object[h].hora + " " + date,
+          fecha: h + " " + date,
         };
       });
-      setData(newData);
+      setData(newData.reverse());
 
       setCo(data.map((value) => value.co));
       setHumedad(data.map((value) => value.humedad));
@@ -87,12 +87,12 @@ export default function App() {
           return <div className="col-12 text-center mt-2">No hay datos</div>;
         return (
           <Ultimos
-            humedad={data[data.length - 1].humedad}
-            temperatura={data[data.length - 1].temperatura}
-            luz={data[data.length - 1].luz}
-            lluvia={data[data.length - 1].lluvia}
-            suelo={data[data.length - 1].suelo}
-            co={data[data.length - 1].co}
+            humedad={data[1].humedad}
+            temperatura={data[1].temperatura}
+            luz={data[1].luz}
+            lluvia={data[1].lluvia}
+            suelo={data[1].suelo}
+            co={data[1].co}
           />
         );
       default:
