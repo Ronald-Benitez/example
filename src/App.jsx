@@ -22,36 +22,42 @@ export default function App() {
   const db = getDatabase(app);
 
   const getData = () => {
-    const newHora = hora.split(":")[0];
-
-    setCo([]);
-    setHumedad([]);
-    setLuz([]);
-    setLluvia([]);
-    setTemperatura([]);
-    setSuelo([]);
-    setData([]);
-
-    for (let i = 0; i <= 59; i++) {
-      const h = `${newHora}:${i < 10 ? "0" + i : i}`;
-      getSensorData(h);
-    }
-  };
-
-  const getSensorData = (h) => {
-    onValue(ref(db, "Sensores/" + date + "/" + h), (snapshot) => {
+    onValue(ref(db, "Sensores/" + date), (snapshot) => {
       const object = snapshot.val();
       if (!object) return;
-      object.fecha = h + " " + date;
+      const keys = Object.keys(object);
 
-      setCo((prevState) => [...prevState, object.co]);
-      setHumedad((prevState) => [...prevState, object.humedad]);
-      setLuz((prevState) => [...prevState, object.luz]);
-      setLluvia((prevState) => [...prevState, object.lluvia]);
-      setTemperatura((prevState) => [...prevState, object.temperatura]);
-      setSuelo((prevState) => [...prevState, object.suelo]);
+      //data mapeada con fecha y hora obtenidad del id del objeto
+      const newData = keys.map((h) => {
+        return {
+          ...object[h],
+          fecha: object[h].hora + " " + date,
+        };
+      });
+      setData(newData);
 
-      setData((prevState) => [...prevState, object]);
+      setCo(data.map((value) => value.co));
+      setHumedad(data.map((value) => value.humedad));
+      setLuz(data.map((value) => value.luz));
+      setLluvia(data.map((value) => value.lluvia));
+      setTemperatura(data.map((value) => value.temperatura));
+      setSuelo(data.map((value) => value.suelo));
+    });
+  };
+
+  const setTest = () => {
+    set(ref(db, "Sensores/" + date + "/" + hora), {
+      co: 10 * Math.random(),
+      humedad: 10 * Math.random(),
+      luz: 10 * Math.random(),
+      lluvia: 10 * Math.random(),
+      suelo: 10 * Math.random(),
+      temperatura: 10 * Math.random(),
+    });
+
+    onValue(ref(db, "Sensores/" + date), (snapshot) => {
+      const object = snapshot.val();
+      console.log(object);
     });
   };
 
@@ -77,17 +83,16 @@ export default function App() {
           />
         );
       case "ultimos":
-        const lastData = data[data.length - 1];
-        if (!lastData)
+        if (!data.length)
           return <div className="col-12 text-center mt-2">No hay datos</div>;
         return (
           <Ultimos
-            humedad={lastData.humedad}
-            temperatura={lastData.temperatura}
-            luz={lastData.luz}
-            lluvia={lastData.lluvia}
-            suelo={lastData.suelo}
-            co={lastData.co}
+            humedad={data[data.length - 1].humedad}
+            temperatura={data[data.length - 1].temperatura}
+            luz={data[data.length - 1].luz}
+            lluvia={data[data.length - 1].lluvia}
+            suelo={data[data.length - 1].suelo}
+            co={data[data.length - 1].co}
           />
         );
       default:
@@ -117,6 +122,12 @@ export default function App() {
           onClick={() => setView("ultimos")}
         >
           Ultimos
+        </button>
+        <button
+          className="btn btn btn-dark col-12 col-md-3 "
+          onClick={() => setTest()}
+        >
+          Test
         </button>
       </div>
       <div className="row mt-4 border py-4">
