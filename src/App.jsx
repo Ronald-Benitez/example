@@ -10,12 +10,6 @@ import Table from "./pages/Table";
 export default function App() {
   const [date, setDate] = useState(moment().format("DD-MM-YYYY"));
   const [hora, setHora] = useState(moment().format("HH:mm"));
-  const [co, setCo] = useState([]);
-  const [humedad, setHumedad] = useState([]);
-  const [luz, setLuz] = useState([]);
-  const [lluvia, setLluvia] = useState([]);
-  const [temperatura, setTemperatura] = useState([]);
-  const [suelo, setSuelo] = useState([]);
   const [data, setData] = useState([]);
   const [view, setView] = useState("tabla");
 
@@ -35,13 +29,6 @@ export default function App() {
         };
       });
       setData(newData.reverse());
-
-      setCo(data.map((value) => value.co));
-      setHumedad(data.map((value) => value.humedad));
-      setLuz(data.map((value) => value.luz));
-      setLluvia(data.map((value) => value.lluvia));
-      setTemperatura(data.map((value) => value.temperatura));
-      setSuelo(data.map((value) => value.suelo));
     });
   };
 
@@ -72,16 +59,7 @@ export default function App() {
       case "graficos":
         if (!data.length)
           return <div className="col-12 text-center mt-2">No hay datos</div>;
-        return (
-          <Graficos
-            humedad={humedad}
-            temperatura={temperatura}
-            luz={luz}
-            lluvia={lluvia}
-            suelo={suelo}
-            co={co}
-          />
-        );
+        return <Graficos data={data} />;
       case "ultimos":
         if (!data.length)
           return <div className="col-12 text-center mt-2">No hay datos</div>;

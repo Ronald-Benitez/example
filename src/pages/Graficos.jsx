@@ -1,16 +1,37 @@
+import { useEffect, useState } from "react";
 import { VictoryLine, VictoryChart } from "victory";
 
-export default function Prueba({
-  humedad,
-  co,
-  luz,
-  suelo,
-  lluvia,
-  temperatura,
-}) {
+export default function Graficos({ data }) {
+  const [co, setCo] = useState([]);
+  const [humedad, setHumedad] = useState([]);
+  const [luz, setLuz] = useState([]);
+  const [lluvia, setLluvia] = useState([]);
+  const [temperatura, setTemperatura] = useState([]);
+  const [suelo, setSuelo] = useState([]);
 
+  useEffect(() => {
+    data = data.slice(0, 5);
 
-  
+    setCo(data.map((d) => ({ x: d.fecha?.split(" ")[0], y: d.co })).reverse());
+    setHumedad(
+      data.map((d) => ({ x: d.fecha?.split(" ")[0], y: d.humedad })).reverse()
+    );
+    setLuz(
+      data.map((d) => ({ x: d.fecha?.split(" ")[0], y: d.luz })).reverse()
+    );
+    setLluvia(
+      data.map((d) => ({ x: d.fecha?.split(" ")[0], y: d.lluvia })).reverse()
+    );
+    setTemperatura(
+      data
+        .map((d) => ({ x: d.fecha?.split(" ")[0], y: d.temperatura }))
+        .reverse()
+    );
+    setSuelo(
+      data.map((d) => ({ x: d.fecha?.split(" ")[0], y: d.suelo })).reverse()
+    );
+  }, [data]);
+
   return (
     <div className="row">
       <div className="col-12 col-md-4 mt-3">
