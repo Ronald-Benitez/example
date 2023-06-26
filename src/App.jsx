@@ -64,6 +64,8 @@ export default function App() {
       case "tabla":
         return <Table data={data} />;
       case "graficos":
+        if (!data.length)
+          return <div className="col-12 text-center mt-2">No hay datos</div>;
         return (
           <Graficos
             humedad={humedad}
@@ -77,7 +79,7 @@ export default function App() {
       case "ultimos":
         const lastData = data[data.length - 1];
         if (!lastData)
-          return <div className="col-12 text-center">No hay datos</div>;
+          return <div className="col-12 text-center mt-2">No hay datos</div>;
         return (
           <Ultimos
             humedad={lastData.humedad}
