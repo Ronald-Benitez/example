@@ -9,7 +9,7 @@ import Table from "./pages/Table";
 
 export default function App() {
   const [date, setDate] = useState(moment().format("DD-MM-YYYY"));
-  const [hora, setHora] = useState("00:00");
+  const [hora, setHora] = useState(moment().format("HH:mm"));
   const [co, setCo] = useState([]);
   const [humedad, setHumedad] = useState([]);
   const [luz, setLuz] = useState([]);
